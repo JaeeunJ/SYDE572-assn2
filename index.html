@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYDE 572 - Assignment 2</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="bento-container">
+        <header class="bento-card col-12 header-card">
+            <div>
+                <h1>Linear Regression</h1>
+                <div class="subtitle">SYDE 572 Assignment 2</div>
+            </div>
+            <div>
+                <span class="badge">Charissa Jeong (20939112)</span>
+            </div>
+        </header>
+
+        <div class="bento-card col-6">
+            <h2>Part 1A: Polynomial Basis Function</h2>
+            <p>Evaluating linear basis function regression using monomials (x, x², x³, etc.) without cross-terms or
+                regularization. The model is trained on the first 100 data points and evaluated on the remainder.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Degree</th>
+                        <th>Train RMS Error</th>
+                        <th>Test RMS Error</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>2.037</td>
+                        <td>36.445</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>1.578</td>
+                        <td>1,097.203</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>1.449</td>
+                        <td>202,083,430.444</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>0.881</td>
+                        <td>2.21 × 10²⁷</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="bento-card col-6 image-card">
+            <img src="./media/part1a_plot.svg" alt="RMS Error vs Polynomial Degree">
+        </div>
+
+        <div class="bento-card col-4 insights-card">
+            <h2>Overfitting Insights</h2>
+            <p>When you make a model too mathematically complex, it learns the training data perfectly, which causes the
+                training error
+                to drop to almost zero. However, because it is hyper-focusing on the random noise and tiny variations in
+                that specific dataset,
+                it fails completely when evaluated on new, unseen data. This is why the testing error explodes
+                exponentially; the model
+                becomes so overly customized to the training set that its predictions for anything else are wildly
+                inaccurate.</p>
+        </div>
+
+        <div class="bento-card col-8 code-card">
+            <h2>Monomial Basis Function & Regression Setup</h2>
+            <pre><code>def create_monomial_basis(X_data, degree):
+                        N, D = X_data.shape
+                        Phi = [np.ones(N)] # Bias column
+                        for d in range(1, degree + 1):
+                            for j in range(D):
+                                Phi.append(X_data[:, j] ** d)
+                        return np.column_stack(Phi)
+
+                    # Solve for optimal weights using pseudo-inverse
+                    w = np.linalg.pinv(Phi_train) @ y_train
+
+                    y_train_pred = Phi_train @ w
+                    y_test_pred = Phi_test @ w</code></pre>
+        </div>
+
+        <hr class="col-12">
+
+        <div class="bento-card col-8 code-card">
+            <h2>Part 1B: Degree 1 Polynomial Weights</h2>
+            <pre><code># Create Degree 1 basis (bias + normalized features)
+                            Phi_train_deg1 = np.column_stack([np.ones(len(X_train_norm)), X_train_norm])
+    
+                            # Solve for exact weights
+                            w_deg1 = np.linalg.pinv(Phi_train_deg1) @ y_train
+    
+                            w_RM = w_deg1[6]  # 6th feature (Average Rooms)
+                            w_DIS = w_deg1[8] # 8th feature (Distance to centers)
+    
+                            print(f"Weight 6 (RM - rooms): {w_RM:.2f}")
+                            print(f"Weight 8 (DIS - distance): {w_DIS:.2f}")</code></pre>
+        </div>
+
+        <div class="bento-card col-4 insights-card">
+            <h2>Degree 1 Weights</h2>
+            <p><strong>Weight 6 (RM): 4.20</strong><br>Highly reasonable. More rooms generally mean a larger, more
+                expensive
+                home.</p>
+            <br>
+            <p><strong>Weight 8 (DIS): 0.01</strong><br>Negligible. In this 100-point subset, the penalty for distance
+                is
+                likely absorbed by other correlated features.</p>
+        </div>
+
+        <hr class="col-12">
+
+        <div class="bento-card col-12">
+            <h2>Part 1C: 1D Visualization on Feature 2 (ZN)</h2>
+            <p>To better visualize the effects of polynomial degree, we isolate the 2nd feature and plot the resulting
+                curves alongside the normalized training and testing data.</p>
+        </div>
+
+        <div class="bento-card col-4 insights-card">
+            <h2>Degree 1: Underfitting</h2>
+            <p>High bias. The straight line provides a generalized trend but misses the clustered behavior of the data
+                points.</p>
+        </div>
+
+        <div class="bento-card col-4 insights-card">
+            <h2>Degree 3: Balanced Fit</h2>
+            <p>Reasonable variance. The curve bends slightly to accommodate the spread of higher normalized values
+                without oscillating like crazy.</p>
+        </div>
+
+        <div class="bento-card col-4 insights-card" style="background: #ef4444;">
+            <h2>Degree 9: Overfitting</h2>
+            <p>High variance. The polynomial shoots up and down drastically, which fails for generalized test points.
+            </p>
+        </div>
+
+        <div class="bento-card col-4 image-card">
+            <img src="./media/part1c_deg1.svg" alt="Degree 1 Fit">
+        </div>
+
+        <div class="bento-card col-4 image-card">
+            <img src="./media/part1c_deg3.svg" alt="Degree 3 Fit">
+        </div>
+
+        <div class="bento-card col-4 image-card">
+            <img src="./media/part1c_deg9.svg" alt="Degree 9 Fit">
+        </div>
+
+        <hr class="col-12">
+
+        <div class="bento-card col-12">
+            <h2>Part 1D: L2-Regularized Polynomial Regression</h2>
+            <p>Using 10-fold cross-validation, we test L2 penalty values (λ) to stabilize a highly complex Degree 8
+                polynomial fitted on the 2nd feature.</p>
+        </div>
+
+        <div class="bento-card col-4 insights-card">
+            <h2>Best Regularizing Constant</h2>
+                <p><strong>λ = 0.01</strong><br>
+                A small penalty (λ = 0.01) perfectly stabilizes the highly volatile degree 8 polynomial, resulting in the
+                lowest validation error. The unregularized model (λ = 0, red line) overfits and performs poorly by
+                comparison.</p>
+        </div>
+
+        <div class="bento-card col-8 image-card">
+            <img src="./media/part1d_plot.svg" alt="RMS Error vs Lambda (Degree 8)">
+        </div>
+
+        <div class="bento-card col-12 code-card">
+            <h2>10-Fold CV & L2 Regularization Setup</h2>
+            <pre><code>lambdas = [0, 0.01, 0.1, 1, 10, 100, 1000]
+                        kf = KFold(n_splits=10, shuffle=True, random_state=42)
+
+                        for lam in lambdas:
+                            for train_idx, val_idx in kf.split(Phi):
+                                Phi_train, Phi_val = Phi[train_idx], Phi[val_idx]
+                                y_train, y_val = y_train_full[train_idx], y_train_full[val_idx]
+                                
+                                I = np.eye(Phi.shape[1])
+                                I[0, 0] = 0
+                                
+                                # w = (Phi^T Phi + λI)^-1 Phi^T y
+                                w = np.linalg.pinv(Phi_train.T @ Phi_train + lam * I) @ Phi_train.T @ y_train</code></pre>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
