@@ -6,12 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SYDE 572 - Assignment 2</title>
     <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
 </head>
 
 <body>
 
-    <div class="bento-container">
-        <header class="bento-card col-12 header-card">
+    <header class="bento-card col-12 header-card">
+        <div class="bento-card-inner">
             <div>
                 <h1>Linear Regression</h1>
                 <div class="subtitle">SYDE 572 Assignment 2</div>
@@ -19,7 +20,14 @@
             <div>
                 <span class="badge">Charissa Jeong (20939112)</span>
             </div>
-        </header>
+        </div>
+        <div class="tab">
+            <button class="tablinks" onclick="openPart(event, 'part1')" id="defaultOpen">Part 1</button>
+            <button class="tablinks" onclick="openPart(event, 'part2')">Part 2</button>
+        </div>
+    </header>
+
+    <div class="bento-container" id="part1">
 
         <div class="bento-card col-6">
             <h2>Part 1A: Polynomial Basis Function</h2>
@@ -168,8 +176,9 @@
 
         <div class="bento-card col-4 insights-card">
             <h2>Best Regularizing Constant</h2>
-                <p><strong>λ = 0.01</strong><br>
-                A small penalty (λ = 0.01) perfectly stabilizes the highly volatile degree 8 polynomial, resulting in the
+            <p><strong>λ = 0.01</strong><br>
+                A small penalty (λ = 0.01) perfectly stabilizes the highly volatile degree 8 polynomial, resulting in
+                the
                 lowest validation error. The unregularized model (λ = 0, red line) overfits and performs poorly by
                 comparison.</p>
         </div>
@@ -197,6 +206,46 @@
 
     </div>
 
+    <div class="bento-container" id="part2">
+        <div class="bento-card col-12">
+            <h2>Part 2E: Gaussian Basis Function Regression</h2>
+            <p>Evaluating unregularized regression using 5 to 95 randomly sampled Gaussian centroids from the training
+                set across all 13 features.</p>
+        </div>
+
+        <div class="bento-card col-4 insights-card">
+            <h2>Gaussian Overfitting</h2>
+            <p>Training error steadily drops to near zero as K approaches 95. However, test error reaches its lowest
+                point around K = 25 to 35 before exploding exponentially, demonstrating clear overfitting as the number
+                of basis functions approaches the number of training samples.</p>
+        </div>
+
+        <div class="bento-card col-8 image-card">
+            <img src="./media/part2e_plot.svg" alt="RMS Error vs Number of Gaussian Basis Functions">
+        </div>
+
+        <hr class="col-12">
+
+        <div class="bento-card col-12">
+            <h2>Part 2F: Regularized Gaussian Basis Regression</h2>
+            <p>Using 10-fold cross-validation on 90 Gaussian basis functions to select the optimal regularizing
+                parameter λ across all 13 features.</p>
+        </div>
+
+        <div class="bento-card col-4 insights-card">
+            <h2>Optimal Regularizing Constant</h2>
+            <p><strong>λ = 0.01</strong> <br>
+                Without regularization (λ = 0, red line), 90 basis functions overfit heavily with a validation RMS error
+                of 52.38. Applying λ = 0.01 stabilizes the weights, dropping the validation error to 1.92.</p>
+        </div>
+
+        <div class="bento-card col-8 image-card">
+            <img src="./media/part2f_plot.svg" alt="10-Fold CV RMS Error vs Lambda for 90 Gaussian Basis Functions">
+        </div>
+
+    </div>
+
 </body>
+
 
 </html>

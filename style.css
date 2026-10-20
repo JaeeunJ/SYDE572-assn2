@@ -25,17 +25,18 @@ hr {
     width: 100%;
     border: none;
     border-top: 3px dotted #cccccce3;
-}
-  
-  
+} 
 
 .bento-container {
     display: grid;
+    align-items: stretch; /* Changed from 'start' to 'stretch' */
     grid-template-columns: repeat(12, 1fr);
     grid-auto-rows: min-content;
     gap: 24px;
     max-width: 1400px;
     margin: 0 auto;
+    animation: fadeEffect 1s;
+    min-height: 100vh; /* Added minimum height */
 }
 
 .bento-card {
@@ -47,6 +48,14 @@ hr {
     flex-direction: column;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.bento-card-inner {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .col-12 { grid-column: span 12; }
@@ -61,10 +70,12 @@ p { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 0; }
 .subtitle { color: var(--text-secondary); font-size: 1.1rem; }
 
 .header-card {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+    gap: 24px;
     padding: 40px;
+    padding-bottom: 20px;
+    background-color: transparent;
+    border: none;
+    background-image: linear-gradient(#ffffff 50%, #6f6f6f08 90%);
 }
 
 table {
@@ -139,3 +150,38 @@ pre { color: #e5e7eb; overflow-x: auto; font-size: 0.85rem; font-family: 'Courie
 @media (max-width: 768px) {
     .col-6, .col-4 { grid-column: span 12; }
 }
+
+.tab {
+    overflow: hidden;
+    margin: 1rem 0;
+  }
+  
+  .tab button {
+    background-color: inherit;
+    border: none;
+    border-bottom: 2px solid #e5e7eb;
+
+    font-weight: 500;
+    font-size: 1.2rem;
+
+    float: left;
+    outline: none;
+    cursor: pointer;
+    padding: 14px;
+    width: 50%;
+    transition: 0.3s;
+  }
+  
+  .tab button:hover {
+    border-bottom: 2px solid #05966888;
+  }
+  
+  .tab button.active {
+    border-bottom: 2px solid #059669;
+  }
+  
+  @keyframes fadeEffect {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+  
